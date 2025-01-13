@@ -5,10 +5,11 @@ import com.itgirl.library_project.entity.Genre;
 import java.util.List;
 
 public interface GenreRepository<Genre, Long> {
-    Object save(Genre genre);
-   Genre getGenreById(Long id);
-   Genre getGenreByName(String name);
+    Genre getGenreByGenreId(Long id);
 
-    List<com.itgirl.library_project.entity.Genre> findAll();
+    Genre getGenreByGenreName(String name);
+
+    List<Genre> findAll();
+
+    Object save(com.itgirl.library_project.entity.Genre genre);
 }
-

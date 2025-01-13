@@ -1,5 +1,6 @@
 package com.itgirl.library_project.servise;
 
+
 import com.itgirl.library_project.entity.Genre;
 import com.itgirl.library_project.repository.GenreRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ public class GenreService {
     @Autowired
     private GenreRepository genreRepository;
 
-
     public Genre addNewGenre(Genre genre) {
         return (Genre) genreRepository.save(genre);
     }
@@ -26,13 +26,13 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
-    public Genre getGenreById(Long id) {
+    public Genre getGenreByGenreId(Long id) {
         System.out.println("Get genre with id " + id);
-        return (Genre) genreRepository.getGenreById(id);
+        return (Genre) genreRepository.getGenreByGenreId(id);
     }
 
-    public Genre getGenreByName(String genre) {
+    public Genre getGenreByGenreName(String genre) {
         System.out.println("Get genre with name " + genre);
-        return (Genre) genreRepository.getGenreByName(genre);
+        return (Genre) genreRepository.getGenreByGenreName(genre);
     }
 }

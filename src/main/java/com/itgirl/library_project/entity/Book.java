@@ -37,5 +37,5 @@ public class Book {
 
     @CreationTimestamp
     @Column(name = "Book_dt")
-    public Timestamp data;
+    private Timestamp data;
 }
