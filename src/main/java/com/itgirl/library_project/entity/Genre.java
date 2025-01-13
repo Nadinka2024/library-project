@@ -1,21 +1,21 @@
 package com.itgirl.library_project.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
-import java.util.Set;
-
-@Entity
-@Table(name = "books")
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-
-public class Author {
+@NoArgsConstructor
+@Builder
+@Getter
+@Entity
+public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +23,4 @@ public class Author {
 
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private String surname;
-
-    @ManyToMany(mappedBy = "authors")
-    private Set<Book> books;
-
 }
