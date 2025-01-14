@@ -8,7 +8,7 @@
 
     <changeSet id="create_table_genres" author="nadezhdachurilo">
         <createTable tableName="genres">
-            <column name="id" type="big serial">
+            <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"></constraints>
             </column>
             <column name="genre" type="varchar(100)">
