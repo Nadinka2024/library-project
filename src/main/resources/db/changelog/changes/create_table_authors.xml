@@ -6,16 +6,16 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create_table_author" author="NadezhdaChurilo">
-        <createTable tableName="author">
-            <column name="id" type="bigserial">
-                <constraints primaryKey="true" nullable="false"/>
+    <changeSet id="create_table_authors" author="nadezhdachurilo">
+        <createTable tableName="authors">
+            <column name="id" type="big serial">
+                <constraints primaryKey="true" nullable="false"></constraints>
             </column>
             <column name="author_name" type="varchar(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false"></constraints>
             </column>
             <column name="author_surname" type="varchar(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false"></constraints>
             </column>
         </createTable>
     </changeSet>

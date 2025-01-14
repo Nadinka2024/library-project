@@ -6,13 +6,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create_table_genre" author="NadezhdaChurilo">
+    <changeSet id="create_table_genres" author="nadezhdachurilo">
         <createTable tableName="genres">
-            <column name="id" type="bigserial">
-                <constraints primaryKey="true" nullable="false"/>
+            <column name="id" type="big serial">
+                <constraints primaryKey="true" nullable="false"></constraints>
             </column>
             <column name="genre" type="varchar(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false"></constraints>
             </column>
         </createTable>
     </changeSet>

@@ -22,6 +22,7 @@ public class Book {
     private Long id;
 
     @Column(nullable = false)
+    @JoinColumn(name = "title")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
