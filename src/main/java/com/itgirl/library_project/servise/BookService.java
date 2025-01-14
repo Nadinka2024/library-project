@@ -18,22 +18,22 @@ public class BookService {
 
 
     public Book addNewBook(Book book){
-        return (Book) bookRepository.save(book);
+        return bookRepository.save(book);
     }
 
-    public List getAllBook() {
+    public List<Book> getAllBook() {
         log.info("Get all books");
         return bookRepository.findAll();
     }
 
-    public Book getBookById(Long id){
+    public Book getBookByBookId(Long id){
         System.out.println("Get book with id " + id);
-        return (Book) bookRepository.getBookById(id);
+        return bookRepository.getBookByBookId(id);
     }
 
     public Book getBookByName(String bookName){
         System.out.println("Get book with name " + bookName);
-        return (Book) bookRepository.getBookByName(bookName);
+        return bookRepository.getBookByName(bookName);
     }
 }
 

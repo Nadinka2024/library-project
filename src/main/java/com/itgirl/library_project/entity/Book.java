@@ -30,7 +30,7 @@ public class Book {
 
     @ManyToMany
     @JoinTable(
-            name = "author_book",  // Промежуточная таблица для связи многие ко многим
+            name = "author_book",
             inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"),
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"))
     private Set<Author> authors;

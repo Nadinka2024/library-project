@@ -23,13 +23,13 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    public Author getAuthorById(Long id) {
+    public Author getAuthorByAuthorId(Long id) {
         System.out.println("Get author with ID " + id);
         return authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("Author with ID " + id + " not found"));
     }
 
-    public Author getAuthorByName(String authorSurname, String authorName) {
+    public Author getAllAuthorByName(String authorSurname, String authorName) {
         System.out.println("Get author by name " + authorSurname + " " + authorName);
         return authorRepository.findByAuthorSurnameAndAuthorName(authorSurname, authorName)
                 .orElseThrow(() -> new AuthorNotFoundException("Author with name " + authorName + " " + authorSurname + " not found"));
