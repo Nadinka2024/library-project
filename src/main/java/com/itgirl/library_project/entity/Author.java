@@ -1,15 +1,14 @@
 package com.itgirl.library_project.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "authors")
+@Builder
+@Table(name = "author")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +27,6 @@ public class Author {
     private String surname;
 
     @ManyToMany(mappedBy = "authors")
-    private Set<Book> books;
+    private List<Book> books;
 
 }

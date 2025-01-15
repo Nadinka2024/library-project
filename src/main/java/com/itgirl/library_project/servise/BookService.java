@@ -17,8 +17,9 @@ public class BookService {
     private BookRepository bookRepository;
 
 
-    public Book addNewBook(Book book){
-        return bookRepository.save(book);
+    public Book addNewBook(Book book) {
+        log.info("Adding new book: {}", book.getName());
+        return (Book) bookRepository.save(book);
     }
 
     public List<Book> getAllBook() {
@@ -26,12 +27,12 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book getBookByBookId(Long id){
+    public Book getBookByBookId(Long id) {
         System.out.println("Get book with id " + id);
         return bookRepository.getBookByBookId(id);
     }
 
-    public Book getBookByName(String bookName){
+    public Book getBookByName(String bookName) {
         System.out.println("Get book with name " + bookName);
         return bookRepository.getBookByName(bookName);
     }

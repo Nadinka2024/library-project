@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 @AllArgsConstructor
-@Table(name = "genres")
+@Table(name = "genre")
 @NoArgsConstructor
 @Builder
 @Getter
