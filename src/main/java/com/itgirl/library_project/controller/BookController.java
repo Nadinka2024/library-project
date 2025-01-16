@@ -1,8 +1,6 @@
 package com.itgirl.library_project.controller;
 
-import com.itgirl.library_project.entity.Author;
 import com.itgirl.library_project.entity.Book;
-import com.itgirl.library_project.servise.AuthorService;
 import com.itgirl.library_project.servise.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

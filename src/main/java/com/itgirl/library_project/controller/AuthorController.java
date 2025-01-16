@@ -26,8 +26,8 @@ public class AuthorController {
     @GetMapping("/authors/{id}")
     public ResponseEntity<?> getAuthorByAuthorId(@PathVariable Long id) {
         try {
-            Author author = authorService.getAuthorByAuthorId(id);
-            return ResponseEntity.ok(author);
+            Author authorDto = authorService.getAuthorByAuthorId(id);
+            return ResponseEntity.ok(authorDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching the author");
         }

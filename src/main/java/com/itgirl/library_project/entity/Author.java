@@ -1,5 +1,6 @@
 package com.itgirl.library_project.entity;
 
+import com.itgirl.library_project.Dto.BookDto;
 import jakarta.persistence.*;
 import lombok.*;
 

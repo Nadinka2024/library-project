@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "book")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,13 +22,13 @@ public class Book {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id", nullable = false)
+    @JoinColumn(name = "genre_id")
     private Genre genre;
 
     @ManyToMany
     @JoinTable(
             name = "author_book",
-            inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"),
-            joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"))
-    private Set<Author> authors;
+            inverseJoinColumns = @JoinColumn(name = "author_id",referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "book_id",referencedColumnName = "id"))
+    private List<Author> authors;
 }
