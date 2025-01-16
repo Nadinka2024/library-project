@@ -18,7 +18,7 @@ public class GenreService {
     private GenreRepository genreRepository;
 
     public Genre addNewGenre(Genre genre) {
-        return (Genre) genreRepository.save(genre);
+        return  (genreRepository.save(genre));
     }
 
     public List<Genre> getAllGenre() {
@@ -28,11 +28,11 @@ public class GenreService {
 
     public Genre getGenreByGenreId(Long id) {
         System.out.println("Get genre with id " + id);
-        return (Genre) genreRepository.getGenreByGenreId(id);
+        return genreRepository.getGenreByGenreId(id);
     }
 
     public Genre getGenreByGenreName(String genre) {
         System.out.println("Get genre with name " + genre);
-        return (Genre) genreRepository.getGenreByGenreName(genre);
+        return genreRepository.getGenreByGenreName(genre);
     }
 }

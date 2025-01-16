@@ -2,10 +2,8 @@ package com.itgirl.library_project.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.Id;
 
-import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity

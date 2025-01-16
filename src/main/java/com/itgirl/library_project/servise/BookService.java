@@ -19,7 +19,7 @@ public class BookService {
 
     public Book addNewBook(Book book) {
         log.info("Adding new book: {}", book.getName());
-        return (Book) bookRepository.save(book);
+        return bookRepository.save(book);
     }
 
     public List<Book> getAllBook() {
