@@ -9,11 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-    Author getAuthorByAuthorId(Long id);
+    Author getAuthorById(Long id);
 
     Author getAllAuthorByName(String name);
 
-    Optional<Author> findByAuthorSurnameAndAuthorName(String authorSurname, String authorName);
+    Optional<Author> findBySurnameAndName(String Surname, String Name);
 
 }
 

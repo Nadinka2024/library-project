@@ -27,9 +27,9 @@ public class BookController {
     }
 
     @GetMapping("/books/{id}")
-    public ResponseEntity<?> getBookByBookId(@PathVariable Long id) {
+    public ResponseEntity<?> getBookById(@PathVariable Long id) {
         try {
-            Book book = bookService.getBookByBookId(id);
+            Book book = bookService.getBookById(id);
             return ResponseEntity.ok(book);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching the book");

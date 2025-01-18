@@ -27,9 +27,9 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book getBookByBookId(Long id) {
+    public Book getBookById(Long id) {
         System.out.println("Get book with id " + id);
-        return bookRepository.getBookByBookId(id);
+        return bookRepository.getBookById(id);
     }
 
     public Book getBookByName(String bookName) {

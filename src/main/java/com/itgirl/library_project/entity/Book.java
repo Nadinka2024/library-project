@@ -2,7 +2,6 @@ package com.itgirl.library_project.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
 

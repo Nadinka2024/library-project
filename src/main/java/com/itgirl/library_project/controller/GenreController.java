@@ -29,9 +29,9 @@ public class GenreController {
     }
 
     @GetMapping("/genres/{id}")
-    public ResponseEntity<?> getGenreByGenreId(@PathVariable Long id) {
+    public ResponseEntity<?> getGenreById(@PathVariable Long id) {
         try {
-            Genre genre = genreService.getGenreByGenreId(id);
+            Genre genre = genreService.getGenreById(id);
             return ResponseEntity.ok(genre);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching the genre");

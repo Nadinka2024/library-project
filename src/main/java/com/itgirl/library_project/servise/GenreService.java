@@ -26,13 +26,13 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
-    public Genre getGenreByGenreId(Long id) {
+    public Genre getGenreById(Long id) {
         System.out.println("Get genre with id " + id);
-        return genreRepository.getGenreByGenreId(id);
+        return genreRepository.getGenreById(id);
     }
 
-    public Genre getGenreByGenreName(String genre) {
+    public Genre getGenreByName(String genre) {
         System.out.println("Get genre with name " + genre);
-        return genreRepository.getGenreByGenreName(genre);
+        return genreRepository.getGenreByName(genre);
     }
 }
