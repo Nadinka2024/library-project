@@ -11,9 +11,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorServiceImpl implements AuthorService {
+public class AuthorServiceImpl implements AuthorServiceDto {
 
     private final AuthorRepository authorRepository;
+
+    @Override
+    public void performAction(){
+        System.out.println("Action performed by AuthorServiceDto");
+    }
 
     @Override
     public AuthorDto getAuthorById(Long id) {

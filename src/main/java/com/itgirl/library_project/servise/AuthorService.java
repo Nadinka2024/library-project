@@ -3,22 +3,17 @@ package com.itgirl.library_project.servise;
 import com.itgirl.library_project.Exception.AuthorNotFoundException;
 import com.itgirl.library_project.entity.Author;
 import com.itgirl.library_project.repository.AuthorRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Slf4j
+
 public class AuthorService {
 
-    private final AuthorRepository authorRepository;
-
     @Autowired
-    public AuthorService(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
+    private AuthorRepository authorRepository;
 
     public List<Author> findAll() {
         return authorRepository.findAll();
@@ -38,5 +33,9 @@ public class AuthorService {
 
     public List<Author> getAllAuthors() {
         return findAll();
+        }
+
+    public void executeTask() {
+      System.out.println("Task executed by AuthorService.");
     }
 }
