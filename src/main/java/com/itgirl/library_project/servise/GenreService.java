@@ -18,7 +18,8 @@ public class GenreService {
     private GenreRepository genreRepository;
 
     public Genre addNewGenre(Genre genre) {
-        return  (genreRepository.save(genre));
+        log.info("Adding new genre: {}", genre.getName());
+        return genreRepository.save(genre);
     }
 
     public List<Genre> getAllGenre() {

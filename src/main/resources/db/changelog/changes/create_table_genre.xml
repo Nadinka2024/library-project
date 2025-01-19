@@ -11,7 +11,7 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"></constraints>
             </column>
-            <column name="genre" type="varchar">
+            <column name="name" type="varchar">
                 <constraints nullable="false"></constraints>
             </column>
         </createTable>

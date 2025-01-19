@@ -1,15 +1,11 @@
 package com.itgirl.library_project.controller;
 
-import com.itgirl.library_project.entity.Author;
 import com.itgirl.library_project.entity.Genre;
-import com.itgirl.library_project.servise.AuthorService;
 import com.itgirl.library_project.servise.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +22,11 @@ public class GenreController {
     @GetMapping("/genres")
     public List<Genre> getAllGenre() {
         return genreService.getAllGenre();
+    }
+
+    @PostMapping("/genres")
+    public Genre addNewGenre(@RequestBody Genre genre){
+        return genreService.addNewGenre(genre);
     }
 
     @GetMapping("/genres/{id}")
