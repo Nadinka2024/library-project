@@ -1,6 +1,8 @@
 package com.itgirl.library_project.servise;
 
+import com.itgirl.library_project.Dto.BookDto;
 import com.itgirl.library_project.entity.Book;
+import com.itgirl.library_project.entity.Genre;
 import com.itgirl.library_project.repository.AuthorRepository;
 import com.itgirl.library_project.repository.BookRepository;
 import com.itgirl.library_project.repository.GenreRepository;
@@ -23,24 +25,13 @@ public class BookService {
     @Autowired
     private AuthorRepository authorRepository;
 
-    public Book addNewBook(Book book) {
-        log.info("Adding new book: {}", book.getName());
-        try {
-            return bookRepository.save(book);
-        } catch (Exception e) {
-            log.error("Error while saving book: {}", book.getName(), e);
-            throw new RuntimeException("Failed to add new book", e);
-        }
-    }
-
-    public List<Book> getAllBook() {
-        log.info("Get all books");
-        try {
-            return bookRepository.findAll();
-        } catch (Exception e) {
-            log.error("Error while fetching all books", e);
-            throw new RuntimeException("Failed to fetch all books", e);
-        }
+    public Book addNewBook(BookDto bookDto) {
+        Genre genre = genreRepository.findById(bookDto.getGenreId())
+                .orElseThrow(() -> new RuntimeException("Genre not found"));
+        Book book = new Book();
+        book.setName(bookDto.getName());
+        book.setGenre(genre);
+        return bookRepository.save(book);
     }
 
     public Book getBookById(Long id) {
@@ -62,5 +53,10 @@ public class BookService {
             log.error("Error while fetching book with name {}", bookName, e);
             throw new RuntimeException("Failed to fetch book by name", e);
         }
+    }
+
+    public List<Book> getAllBook() {
+        log.info("Fetching all books...");
+        return bookRepository.findAll();
     }
 }

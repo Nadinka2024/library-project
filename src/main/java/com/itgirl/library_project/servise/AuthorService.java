@@ -39,7 +39,8 @@ public class AuthorService {
     }
 
     public List<Author> getAllAuthors() {
-        return findAll();
+        log.info("Get all authors with their books");
+        return authorRepository.findAll();
     }
 
     public void executeTask() {

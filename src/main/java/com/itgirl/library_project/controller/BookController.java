@@ -1,5 +1,6 @@
 package com.itgirl.library_project.controller;
 
+import com.itgirl.library_project.Dto.BookDto;
 import com.itgirl.library_project.entity.Book;
 import com.itgirl.library_project.servise.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private Book book;
 
     @Autowired
     public BookController(BookService bookService) {
@@ -25,7 +27,7 @@ public class BookController {
     }
 
     @PostMapping("/books")
-    public Book addNewBook(@RequestBody Book book){
+    public Book addNewBook(@RequestBody BookDto book){
         return bookService.addNewBook(book);
     }
 

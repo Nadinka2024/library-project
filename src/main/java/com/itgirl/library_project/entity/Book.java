@@ -1,5 +1,7 @@
 package com.itgirl.library_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,12 +24,14 @@ public class Book {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
+    @JsonProperty("genre")
     private Genre genre;
 
     @ManyToMany
     @JoinTable(
             name = "author_book",
-            inverseJoinColumns = @JoinColumn(name = "author_id",referencedColumnName = "id"),
-            joinColumns = @JoinColumn(name = "book_id",referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    @JsonProperty("authors")
     private List<Author> authors;
 }

@@ -13,4 +13,8 @@ public class BookDto {
     private Long id;
     private String name;
     private String genre;
+
+    public Long getGenreId() {
+        return getGenreId();
+    }
 }
