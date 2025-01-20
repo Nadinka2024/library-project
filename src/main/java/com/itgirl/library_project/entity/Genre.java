@@ -23,5 +23,5 @@ public class Genre {
     private String name;
 
     @OneToMany(mappedBy = "genre")
-     private List<Book> books;
+    private List<Book> books;
 }

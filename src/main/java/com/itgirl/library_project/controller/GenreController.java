@@ -25,7 +25,7 @@ public class GenreController {
     }
 
     @PostMapping("/genres")
-    public Genre addNewGenre(@RequestBody Genre genre){
+    public Genre addNewGenre(@RequestBody Genre genre) {
         return genreService.addNewGenre(genre);
     }
 

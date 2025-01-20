@@ -11,12 +11,13 @@ public class Application {
     private final AuthorService authorService;
 
     @Autowired
-    public Application(AuthorService authorService, AuthorServiceDto authorServiceDto){
+    public Application(AuthorService authorService, AuthorServiceDto authorServiceDto) {
         this.authorService = authorService;
         this.authorServiceDto = authorServiceDto;
     }
+
     @PostConstruct
-    public void run (){
+    public void run() {
         authorServiceDto.performAction();
         authorService.executeTask();
     }

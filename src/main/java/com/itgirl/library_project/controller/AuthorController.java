@@ -1,4 +1,5 @@
 package com.itgirl.library_project.controller;
+
 import com.itgirl.library_project.entity.Author;
 import com.itgirl.library_project.servise.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @PostMapping ("/authors")
-    public Author addNewAuthor(@RequestBody Author author){
+    @PostMapping("/authors")
+    public Author addNewAuthor(@RequestBody Author author) {
         return authorService.addNewAuthor(author);
     }
 

@@ -16,7 +16,7 @@ public class AuthorServiceImpl implements AuthorServiceDto {
     private final AuthorRepository authorRepository;
 
     @Override
-    public void performAction(){
+    public void performAction() {
         System.out.println("Action performed by AuthorServiceDto");
     }
 
