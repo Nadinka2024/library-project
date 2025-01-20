@@ -1,5 +1,6 @@
 package com.itgirl.library_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +26,7 @@ public class Author {
     @Column(nullable = false)
     private String surname;
 
-    @ManyToMany(mappedBy = "authors")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "authors")
     private List<Book> books;
-
 }
