@@ -1,5 +1,6 @@
 package com.itgirl.library_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Genre {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "genre")
+    @ManyToMany (mappedBy = "genre")
+    @JsonManagedReference
     private List<Book> books;
 }

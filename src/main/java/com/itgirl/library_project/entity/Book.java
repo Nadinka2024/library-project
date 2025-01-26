@@ -1,5 +1,7 @@
 package com.itgirl.library_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +26,7 @@ public class Book {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     @JsonProperty("genre")
+    @JsonBackReference
     private Genre genre;
 
     @ManyToMany
@@ -32,5 +35,6 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     @JsonProperty("authors")
+    @JsonManagedReference
     private List<Author> authors;
 }
