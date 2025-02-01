@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/authors")
 public class AuthorController {
 
     private final AuthorService authorService;
@@ -20,17 +21,17 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @PostMapping("/authors")
+    @PostMapping
     public Author addNewAuthor(@RequestBody Author author) {
         return authorService.addNewAuthor(author);
     }
 
-    @GetMapping("/authors")
+    @GetMapping
     public List<Author> getAllAuthors() {
         return authorService.getAllAuthors();
     }
 
-    @GetMapping("/authors/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getAuthorById(@PathVariable Long id) {
         try {
             Author authorDto = authorService.getAuthorById(id);

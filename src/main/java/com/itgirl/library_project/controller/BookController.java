@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/books")
 public class BookController {
 
     private final BookService bookService;
@@ -21,17 +22,17 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/books")
+    @GetMapping
     public List<Book> getAllBook() {
         return bookService.getAllBook();
     }
 
-    @PostMapping("/books")
+    @PostMapping
     public Book addNewBook(@RequestBody BookDto book) {
         return bookService.addNewBook(book);
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getBookById(@PathVariable Long id) {
         try {
             Book book = bookService.getBookById(id);

@@ -1,39 +1,59 @@
 package com.itgirl.library_project.servise;
 
 
+import com.itgirl.library_project.Dto.AuthorDto;
+import com.itgirl.library_project.Dto.BookDto;
+import com.itgirl.library_project.Dto.GenreDto;
+import com.itgirl.library_project.entity.Author;
 import com.itgirl.library_project.entity.Genre;
 import com.itgirl.library_project.repository.GenreRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Service
 @Slf4j
-
+@Service
+@AllArgsConstructor
 public class GenreService {
 
-    @Autowired
-    private GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
+    private final ModelMapper modelMapper;
 
     public Genre addNewGenre(Genre genre) {
-        log.info("Adding new genre: {}", genre.getName());
         return genreRepository.save(genre);
     }
 
     public List<Genre> getAllGenre() {
-        log.info("Get all genre");
         return genreRepository.findAll();
     }
 
-    public Genre getGenreById(Long id) {
-        System.out.println("Get genre with id " + id);
-        return genreRepository.getGenreById(id);
+    public GenreDto getGenreById(Long id) {
+        Genre genre = genreRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id " + id));
+        return convertToDto(genre);
     }
 
-    public Genre getGenreByName(String genre) {
-        System.out.println("Get genre with name " + genre);
-        return genreRepository.getGenreByName(genre);
+    private GenreDto convertToDto(Genre genre) {
+        GenreDto genreDto = modelMapper.map(genre, GenreDto.class);
+        List<BookDto> bookDtos = genre.getBooks().stream()
+                .map(book -> {
+                    BookDto bookDto = modelMapper.map(book, BookDto.class);
+                    List<AuthorDto> authorDtos = book.getAuthors().stream()
+                            .map(author -> modelMapper.map(author, AuthorDto.class))
+                            .collect(Collectors.toList());
+                    bookDto.setAuthors(authorDtos);
+                    return bookDto;
+                })
+                .collect(Collectors.toList());
+        genreDto.setBooks(bookDtos);
+        return genreDto;
     }
 }
+
