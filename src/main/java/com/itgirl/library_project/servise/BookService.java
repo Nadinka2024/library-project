@@ -1,116 +1,61 @@
 package com.itgirl.library_project.servise;
 
 import com.itgirl.library_project.Dto.BookDto;
+import com.itgirl.library_project.Exception.ResourceNotFoundException;
 import com.itgirl.library_project.entity.Book;
-import com.itgirl.library_project.entity.Genre;
-import com.itgirl.library_project.repository.AuthorRepository;
 import com.itgirl.library_project.repository.BookRepository;
-import com.itgirl.library_project.repository.GenreRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 
-//public class BookService {
-//
-//    @Autowired
-//    private BookRepository bookRepository;
-//
-//    @Autowired
-//    private GenreRepository genreRepository;
-//
-//    @Autowired
-//    private AuthorRepository authorRepository;
-//
-//    public Book addNewBook(BookDto bookDto) {
-//        Genre genre = genreRepository.findById(bookDto.getGenreId())
-//                .orElseThrow(() -> new RuntimeException("Genre not found"));
-//        Book book = new Book();
-//        book.setName(bookDto.getName());
-//        book.setGenre(genre);
-//        return bookRepository.save(book);
-//    }
-//
-//    public Book getBookById(Long id) {
-//        log.info("Get book with id {}", id);
-//        try {
-//            return bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
-//        } catch (Exception e) {
-//            log.error("Error while fetching book with id {}", id, e);
-//            throw new RuntimeException("Failed to fetch book by ID", e);
-//        }
-//    }
-//
-//
-//    public Book getBookByName(String bookName) {
-//        log.info("Get book with name {}", bookName);
-//        try {
-//            return bookRepository.getBookByName(bookName);
-//        } catch (Exception e) {
-//            log.error("Error while fetching book with name {}", bookName, e);
-//            throw new RuntimeException("Failed to fetch book by name", e);
-//        }
-//    }
-//
-//    public List<Book> getAllBook() {
-//        log.info("Fetching all books...");
-//        return bookRepository.findAll();
-//    }
-//}
+import java.util.stream.Collectors;
 
-
-@Service
-@Transactional
 @Slf4j
+@Service
+@AllArgsConstructor
 public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private GenreRepository genreRepository;
-
-    @Autowired
-    private AuthorRepository authorRepository;
-
-    public Book addNewBook(BookDto bookDto) {
-        Genre genre = genreRepository.findById(bookDto.getGenreId())
-                .orElseThrow(() -> new RuntimeException("Genre not found"));
-        Book book = new Book();
-        book.setName(bookDto.getName());
-        book.setGenre(genre);
-        return bookRepository.save(book);
+    @Transactional
+    public BookDto addNewBook(BookDto bookDto) {
+        Book book = modelMapper.map(bookDto, Book.class);
+        Book savedBook = bookRepository.save(book);
+        return modelMapper.map(savedBook, BookDto.class);
     }
 
-    public List<Book> getAllBook() {
-        return bookRepository.findAll();
+    public List<BookDto> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream()
+                .map(book -> modelMapper.map(book, BookDto.class))
+                .collect(Collectors.toList());
     }
 
-    public Book getBookById(Long id) {
-        log.info("Get book with id {}", id);
-        try {
-            return bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
-        } catch (Exception e) {
-            log.error("Error while fetching book with id {}", id, e);
-            throw new RuntimeException("Failed to fetch book by ID", e);
-        }
+    public BookDto getBookById(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
+        return modelMapper.map(book, BookDto.class);
     }
 
-    public Book getBookByName(String bookName) {
-        log.info("Get book with name {}", bookName);
-        try {
-            return bookRepository.getBookByName(bookName);
-        } catch (Exception e) {
-            log.error("Error while fetching book with name {}", bookName, e);
-            throw new RuntimeException("Failed to fetch book by name", e);
-        }
+    @Transactional
+    public BookDto updateBook(Long id, BookDto bookDto) {
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
+        modelMapper.map(bookDto, existingBook);
+        Book updatedBook = bookRepository.save(existingBook);
+        return modelMapper.map(updatedBook, BookDto.class);
     }
 
-    public void deleteById(Long id) {
-        bookRepository.deleteById(id);
+    @Transactional
+    public void deleteBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
+        bookRepository.delete(book);
     }
 }

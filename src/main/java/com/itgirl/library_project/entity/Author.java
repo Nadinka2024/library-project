@@ -1,7 +1,6 @@
 package com.itgirl.library_project.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,7 +26,7 @@ public class Author {
     @Column(nullable = false)
     private String surname;
 
-    @ManyToMany (mappedBy = "authors")
+    @ManyToMany(mappedBy = "authors")
     @JsonBackReference
     private List<Book> books;
 }

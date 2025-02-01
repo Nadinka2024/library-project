@@ -1,86 +1,62 @@
 package com.itgirl.library_project.servise;
 
-import com.itgirl.library_project.Exception.AuthorNotFoundException;
+import com.itgirl.library_project.Dto.AuthorDto;
+import com.itgirl.library_project.Exception.ResourceNotFoundException;
 import com.itgirl.library_project.entity.Author;
 import com.itgirl.library_project.repository.AuthorRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-//
-//@Service
-//@Slf4j
-//
-//public class AuthorService {
-//
-//    @Autowired
-//    private AuthorRepository authorRepository;
-//
-//    public List<Author> findAll() {
-//        return authorRepository.findAll();
-//    }
-//
-//    public Author addNewAuthor(Author author) {
-//        log.info("Adding new author: {}", author.getName());
-//        return authorRepository.save(author);
-//    }
-//
-//    public Author getAuthorById(Long id) {
-//        System.out.println("Get author with ID " + id);
-//        return authorRepository.findById(id)
-//                .orElseThrow(() -> new AuthorNotFoundException("Author with ID " + id + " not found"));
-//    }
-//
-//    public Author getAllAuthorByName(String Surname, String Name) {
-//        System.out.println("Get author by name " + Surname + " " + Name);
-//        return authorRepository.findBySurnameAndName(Surname, Name)
-//                .orElseThrow(() -> new AuthorNotFoundException("Author with name " + Name + " " + Surname + " not found"));
-//    }
-//
-//    public List<Author> getAllAuthors() {
-//        log.info("Get all authors with their books");
-//        return authorRepository.findAll();
-//    }
-//
-//    public void executeTask() {
-//        System.out.println("Task executed by AuthorService.");
-//    }
-//}
-import org.springframework.stereotype.Service;
+
+import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.Optional;
 
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
-@Transactional
-
-
+@AllArgsConstructor
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final ModelMapper modelMapper;
 
-    public AuthorService(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
+    @Transactional
+    public AuthorDto addNewAuthor(AuthorDto authorDto) {
+        Author author = modelMapper.map(authorDto, Author.class);
+        Author savedAuthor = authorRepository.save(author);
+        return modelMapper.map(savedAuthor, AuthorDto.class);
     }
 
-    public Author addNewAuthor(Author author) {
-        return authorRepository.save(author);
+    public List<AuthorDto> getAllAuthors() {
+        List<Author> authors = authorRepository.findAll();
+        return authors.stream()
+                .map(author -> modelMapper.map(author, AuthorDto.class))
+                .collect(Collectors.toList());
     }
 
-    public Author getAuthorById(Long id) {
-        return authorRepository.getAuthorById(id);
+    public AuthorDto getAuthorById(Long id) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id " + id));
+        return modelMapper.map(author, AuthorDto.class);
     }
 
-    public Author save(Author author) {
-        return authorRepository.save(author);
+    @Transactional
+    public AuthorDto updateAuthor(Long id, AuthorDto authorDto) {
+        Author existingAuthor = authorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id " + id));
+        modelMapper.map(authorDto, existingAuthor);
+        Author updatedAuthor = authorRepository.save(existingAuthor);
+        return modelMapper.map(updatedAuthor, AuthorDto.class);
     }
 
-    public void deleteById(Long id) {
-        authorRepository.deleteById(id);
-    }
-
-    public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+    @Transactional
+    public void deleteAuthor(Long id) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id " + id));
+        authorRepository.delete(author);
     }
 }
+

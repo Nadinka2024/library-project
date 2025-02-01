@@ -23,7 +23,11 @@ public class Genre {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany (mappedBy = "genre")
+    @ManyToMany(mappedBy = "genre")
     @JsonManagedReference
     private List<Book> books;
+
+    public String getGenre() {
+        return name;
+    }
 }
