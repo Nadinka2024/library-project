@@ -3,10 +3,12 @@ package com.itgirl.library_project.controller;
 import com.itgirl.library_project.Dto.BookDto;
 import com.itgirl.library_project.servise.BookService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books")
@@ -14,6 +16,8 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final ModelMapper modelMapper;
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -23,7 +27,9 @@ public class BookController {
 
     @GetMapping
     public List<BookDto> getAllBooks() {
-        return bookService.getAllBooks();
+        return bookService.getAllBooks().stream()
+                .map(book -> modelMapper.map(book, BookDto.class))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

@@ -14,6 +14,30 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+//public class Book {
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
+//
+//    @Column(nullable = false)
+//    private String name;
+//
+//    @JsonProperty("genre")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "genre_id")
+//    @JsonBackReference
+//    private Genre genre;
+//
+//    @ManyToMany
+//    @JoinTable(
+//            name = "author_book",
+//            joinColumns = @JoinColumn(name = "book_id"),
+//            inverseJoinColumns = @JoinColumn(name = "author_id"))
+//    @JsonProperty("authors")
+//    @JsonManagedReference
+//    private List<Author> authors;
+
 public class Book {
 
     @Id
@@ -24,9 +48,8 @@ public class Book {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
-    @JsonProperty("genre")
-    @JsonBackReference
+    @JoinColumn(name = "genre_id")  // Здесь связываем с жанром
+    @JsonProperty("genre")  // Убедитесь, что сериализация правильно настроена
     private Genre genre;
 
     @ManyToMany
@@ -35,11 +58,6 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     @JsonProperty("authors")
-    @JsonManagedReference
     private List<Author> authors;
-
-    public String getGenre() {
-        return this.genre != null ? this.genre.getGenre() : null;  // Возвращаем название жанра
-    }
 }
 
