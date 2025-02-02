@@ -23,9 +23,9 @@ public class Book {
     @Column(nullable = false)
     private String name;
 
+    @JsonProperty("genre")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
-    @JsonProperty("genre")
     @JsonBackReference
     private Genre genre;
 
@@ -37,9 +37,5 @@ public class Book {
     @JsonProperty("authors")
     @JsonManagedReference
     private List<Author> authors;
-
-    public String getGenre() {
-        return this.genre != null ? this.genre.getGenre() : null;  // Возвращаем название жанра
-    }
 }
 

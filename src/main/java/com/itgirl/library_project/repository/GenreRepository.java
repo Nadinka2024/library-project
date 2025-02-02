@@ -11,8 +11,11 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
     Optional<Genre> findById(Long id);
 
-    Genre getGenreById(Long id);
+//    Genre getGenreById(Long id);
+//
+//    Genre getGenreByName(String name);
+//
+//    Optional<Genre> findByGenre(String genre);
 
-    Genre getGenreByName(String name);
-
+    Optional<Genre> findByName(String name);
 }

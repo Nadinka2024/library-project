@@ -1,11 +1,11 @@
 package com.itgirl.library_project.controller;
 
 import com.itgirl.library_project.Dto.GenreDto;
-import com.itgirl.library_project.entity.Genre;
 import com.itgirl.library_project.servise.GenreService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +20,9 @@ public class GenreController {
     private final ModelMapper modelMapper;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public GenreDto addNewGenre(@RequestBody GenreDto genreDto) {
-        Genre genre = modelMapper.map(genreDto, Genre.class);
-        Genre savedGenre = genreService.addNewGenre(genre);
-        return modelMapper.map(savedGenre, GenreDto.class);
+    public ResponseEntity<GenreDto> addNewGenre(@RequestBody GenreDto genreDto) {
+        GenreDto savedGenre = genreService.addNewGenre(genreDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedGenre);
     }
 
     @GetMapping
