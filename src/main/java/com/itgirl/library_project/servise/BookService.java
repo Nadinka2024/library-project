@@ -90,7 +90,7 @@ public class BookService {
                 .orElseGet(() -> {
                     Genre newGenre = new Genre();
                     newGenre.setName(bookDto.getGenre());
-                    return genreRepository.save(newGenre);  // Создаем новый жанр, если он не существует
+                    return genreRepository.save(newGenre);
                 });
         List<Author> authors = new ArrayList<>();
         for (AuthorDto authorDto : bookDto.getAuthors()) {
