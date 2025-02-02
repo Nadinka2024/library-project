@@ -44,7 +44,6 @@ public class GenreService {
 
     @Transactional
     public GenreDto updateGenre(Long id, GenreDto genreDto) {
-        log.info("Updating genre with id: {}", id);
         Genre existingGenre = genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id " + id));
         modelMapper.map(genreDto, existingGenre);
@@ -58,10 +57,8 @@ public class GenreService {
 
     @Transactional
     public void deleteGenre(Long id) {
-        log.info("Deleting genre with id: {}", id);
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id " + id));
         genreRepository.delete(genre);
-        log.info("Genre with id {} deleted successfully", id);
     }
 }

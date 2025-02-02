@@ -33,7 +33,6 @@ public class BookService {
         Genre genre = genreRepository.findByName(bookDto.getGenre())
                 .orElseThrow(() -> new ResourceNotFoundException("Genre not found with name " + bookDto.getGenre()));
         Book book = modelMapper.map(bookDto, Book.class);
-        book.setGenre(genre);
         Book savedBook = bookRepository.save(book);
         log.info("Successfully added new book: {}", savedBook.getName());
         return modelMapper.map(savedBook, BookDto.class);

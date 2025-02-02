@@ -37,5 +37,9 @@ public class Book {
     @JsonProperty("authors")
     @JsonManagedReference
     private List<Author> authors;
+
+    public String getGenre() {
+        return this.genre != null ? this.genre.getGenre() : null;  // Возвращаем название жанра
+    }
 }
 
