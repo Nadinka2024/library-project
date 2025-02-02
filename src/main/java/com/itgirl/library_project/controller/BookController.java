@@ -3,6 +3,7 @@ package com.itgirl.library_project.controller;
 import com.itgirl.library_project.Dto.BookDto;
 import com.itgirl.library_project.servise.BookService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +14,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/books")
 @AllArgsConstructor
+@Slf4j
 public class BookController {
 
     private final BookService bookService;
     private final ModelMapper modelMapper;
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto addNewBook(@RequestBody BookDto bookDto) {
+        log.info("Adding new book with name: {}", bookDto.getName());
         return bookService.addNewBook(bookDto);
     }
 

@@ -29,7 +29,7 @@ public class Book {
     @JsonBackReference
     private Genre genre;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "author_book",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -37,9 +37,5 @@ public class Book {
     @JsonProperty("authors")
     @JsonManagedReference
     private List<Author> authors;
-
-    public String getGenre() {
-        return this.genre != null ? this.genre.getGenre() : null;  // Возвращаем название жанра
-    }
 }
 
