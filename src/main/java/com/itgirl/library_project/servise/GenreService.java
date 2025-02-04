@@ -21,6 +21,7 @@ public class GenreService {
     private final GenreRepository genreRepository;
     private final ModelMapper modelMapper;
 
+    @Transactional
     public GenreDto addNewGenre(GenreDto genreDto) {
         if (genreDto.getName() == null || genreDto.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Genre name cannot be null or empty");
@@ -30,12 +31,14 @@ public class GenreService {
         return modelMapper.map(savedGenre, GenreDto.class);
     }
 
+    @Transactional
     public List<GenreDto> getAllGenres() {
         return genreRepository.findAll().stream()
                 .map(genre -> modelMapper.map(genre, GenreDto.class))
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public GenreDto getGenreById(Long id) {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id " + id));
@@ -49,10 +52,6 @@ public class GenreService {
         modelMapper.map(genreDto, existingGenre);
         Genre updatedGenre = genreRepository.save(existingGenre);
         return modelMapper.map(updatedGenre, GenreDto.class);
-    }
-
-    private GenreDto convertToDto(Genre genre) {
-        return modelMapper.map(genre, GenreDto.class);
     }
 
     @Transactional

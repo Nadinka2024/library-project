@@ -9,6 +9,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
+@Table(name = "book")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +27,6 @@ public class Book {
     @JsonProperty("genre")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
-    @JsonBackReference
     private Genre genre;
 
     @ManyToMany(cascade = CascadeType.MERGE)
@@ -38,4 +38,3 @@ public class Book {
     @JsonManagedReference
     private List<Author> authors;
 }
-

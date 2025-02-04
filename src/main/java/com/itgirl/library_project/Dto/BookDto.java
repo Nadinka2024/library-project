@@ -4,11 +4,10 @@ import lombok.*;
 
 import java.util.List;
 
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class BookDto {
     private Long id;

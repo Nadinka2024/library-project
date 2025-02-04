@@ -7,13 +7,12 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Builder
 @Table(name = "author")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Builder
 public class Author {
 
     @Id

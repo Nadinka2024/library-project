@@ -37,10 +37,10 @@ public class BookService {
         if (bookDto.getName() == null || bookDto.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Book name cannot be null or empty");
         }
-        Genre genre = genreRepository.findByName(bookDto.getGenre())
+        Genre genre = genreRepository.findByName(String.valueOf(bookDto.getGenre()))
                 .orElseGet(() -> {
                     Genre newGenre = new Genre();
-                    newGenre.setName(bookDto.getGenre());
+                    newGenre.setName(String.valueOf(bookDto.getGenre()));
                     return genreRepository.save(newGenre);
                 });
         List<Author> authors = new ArrayList<>();
@@ -61,6 +61,7 @@ public class BookService {
         return modelMapper.map(savedBook, BookDto.class);
     }
 
+    @Transactional
     public List<BookDto> getAllBooks() {
         log.info("Fetching all books from the database");
         List<Book> books = bookRepository.findAll();
@@ -72,6 +73,7 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public BookDto getBookById(Long id) {
         log.info("Fetching book with id: {}", id);
         Book book = bookRepository.findById(id)
@@ -86,10 +88,10 @@ public class BookService {
     public BookDto updateBook(Long id, BookDto bookDto) {
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
-        Genre genre = genreRepository.findByName(bookDto.getGenre())
+        Genre genre = genreRepository.findByName(String.valueOf(bookDto.getGenre()))
                 .orElseGet(() -> {
                     Genre newGenre = new Genre();
-                    newGenre.setName(bookDto.getGenre());
+                    newGenre.setName(String.valueOf(bookDto.getGenre()));
                     return genreRepository.save(newGenre);
                 });
         List<Author> authors = new ArrayList<>();

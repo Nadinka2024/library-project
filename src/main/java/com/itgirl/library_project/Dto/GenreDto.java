@@ -4,15 +4,13 @@ import lombok.*;
 
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class GenreDto {
     private Long id;
     private String name;
     private List<BookDto> books;
 }
-
