@@ -27,8 +27,6 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final ModelMapper modelMapper;
-    private final DtoMapper dtoMapper;
-
 
     @Transactional
     public AuthorDto addNewAuthor(AuthorDto authorDto) {
@@ -98,7 +96,6 @@ public class AuthorService {
                         .collect(Collectors.toList()))
                 .build();
     }
-
 
     @Transactional
     public List<AuthorDto> getAuthorsByNameWithCriteria(String name, String surname) {
