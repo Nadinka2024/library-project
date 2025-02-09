@@ -1,5 +1,8 @@
 package com.itgirl.library_project.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+
 import com.itgirl.library_project.Dto.AuthorDto;
 import com.itgirl.library_project.servise.AuthorService;
 import lombok.AllArgsConstructor;
@@ -10,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/authors")
 @AllArgsConstructor
 public class AuthorController {
@@ -25,8 +28,15 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<AuthorDto> getAllAuthors() {
-        return authorService.getAllAuthors();
+    public String getAllAuthors(@RequestParam(required = false) String name,
+                                @RequestParam(required = false) String surname,
+                                Model model) {
+        List<AuthorDto> authorDtos = authorService.getAllAuthors(name, surname);
+
+        System.out.println("Передаём в шаблон: " + authorDtos);
+
+        model.addAttribute("authors", authorDtos);
+        return "allAuthors";
     }
 
     @GetMapping("/{id}")
@@ -55,7 +65,7 @@ public class AuthorController {
     public List<AuthorDto> getAuthorsByNameWithCriteria(@RequestParam(required = false) String name,
                                                         @RequestParam(required = false) String surname) {
         if (StringUtils.isEmpty(name) && StringUtils.isEmpty(surname)) {
-            return authorService.getAllAuthors();
+            return authorService.getAllAuthors(name, surname);
         } else {
             return authorService.getAuthorsByNameWithCriteria(name, surname);
         }

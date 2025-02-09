@@ -35,13 +35,28 @@ public class AuthorService {
         return modelMapper.map(savedAuthor, AuthorDto.class);
     }
 
-    @Transactional
-    public List<AuthorDto> getAllAuthors() {
-        List<Author> authors = authorRepository.findAll();
+//    @Transactional
+//    public List<AuthorDto> getAllAuthors(String name, String surname) {
+//        Specification<Author> specification = Specification.where(null);
+//        if (!StringUtils.isEmpty(name)) {
+//            specification = specification.and(AuthorSpecification.hasName(name));
+//        }
+//        if (!StringUtils.isEmpty(surname)) {
+//            specification = specification.and(AuthorSpecification.hasSurname(surname));
+//        }
+//        List<Author> authors = authorRepository.findAll(specification);
+//        return authors.stream()
+//                .map(author -> modelMapper.map(author, AuthorDto.class))
+//                .collect(Collectors.toList());
+//    }
+@Transactional
+    public List<AuthorDto> getAllAuthors(String name, String surname) {
+        List<Author> authors = authorRepository.findAll(); // Без фильтра
         return authors.stream()
                 .map(author -> modelMapper.map(author, AuthorDto.class))
                 .collect(Collectors.toList());
     }
+
 
     @Transactional
     public AuthorDto getAuthorById(Long id) {
