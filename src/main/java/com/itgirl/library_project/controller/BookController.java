@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,8 @@ public class BookController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookDto addNewBook(@RequestBody BookDto bookDto) {
-        log.info("Adding new book with name: {}", bookDto.getName());
-        return bookService.addNewBook(bookDto);
+    public ResponseEntity<BookDto> addNewBook(@RequestBody BookDto bookDto) {
+        return ResponseEntity.ok(bookService.addNewBook(bookDto));
     }
 
     @GetMapping
