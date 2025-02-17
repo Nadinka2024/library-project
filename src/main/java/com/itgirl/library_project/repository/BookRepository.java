@@ -1,17 +1,20 @@
 package com.itgirl.library_project.repository;
 
 import com.itgirl.library_project.entity.Book;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-
 public interface BookRepository extends JpaRepository<Book, Long> {
-    Optional<Book> findById(Long id);
-
     Optional<Book> findByName(String name);
 
-    Book getBookByName(String bookName);
+    default Book getBookByName(String bookName) {
+        return findByName(bookName)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with name: " + bookName));
+    }
 }
+
+

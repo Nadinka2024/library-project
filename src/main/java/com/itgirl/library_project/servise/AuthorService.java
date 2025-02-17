@@ -1,7 +1,6 @@
 package com.itgirl.library_project.servise;
 
 import com.itgirl.library_project.Dto.AuthorDto;
-import com.itgirl.library_project.Dto.BookDto;
 import com.itgirl.library_project.Exception.ResourceNotFoundException;
 import com.itgirl.library_project.Specification.AuthorSpecification;
 import com.itgirl.library_project.entity.Author;
@@ -87,13 +86,6 @@ public class AuthorService {
                 .id(author.getId())
                 .name(author.getName())
                 .surname(author.getSurname())
-                .books(author.getBooks().stream()
-                        .map(book -> BookDto.builder()
-                                .id(book.getId())
-                                .name(book.getName())
-                                .genre(book.getGenre().getName())
-                                .build())
-                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -109,8 +101,13 @@ public class AuthorService {
         }
 
         List<Author> authors = authorRepository.findAll(specification);
+        log.info("Найдено {} авторов", authors.size());
+
         return authors.stream()
-                .map(author -> modelMapper.map(author, AuthorDto.class))
+                .map(author -> {
+                    log.info("Маппинг автора: {}", author);
+                    return modelMapper.map(author, AuthorDto.class);
+                })
                 .collect(Collectors.toList());
     }
 }
