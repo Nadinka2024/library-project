@@ -1,31 +1,51 @@
 package com.itgirl.library_project.Exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(AuthorNotFoundException.class)
-    public ResponseEntity<String> handleAuthorNotFound(AuthorNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        log.warn("Ресурс не найден: {}", ex.getMessage());
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), LocalDateTime.now()),
+                HttpStatus.NOT_FOUND
+        );
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> validationErrors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                validationErrors.put(error.getField(), error.getDefaultMessage()));
+        log.warn("Ошибка валидации: {}", validationErrors);
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Ошибка валидации",
+                LocalDateTime.now(),
+                validationErrors
+        );
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleException(Exception ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Unexpected error occurred");
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleAllOtherExceptions(Exception ex) {
+        log.error("Непредвиденная ошибка: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Произошла внутренняя ошибка сервера",
+                        LocalDateTime.now()),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 }

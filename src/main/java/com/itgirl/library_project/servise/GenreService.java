@@ -1,63 +1,19 @@
 package com.itgirl.library_project.servise;
 
 import com.itgirl.library_project.Dto.GenreDto;
-import com.itgirl.library_project.Exception.ResourceNotFoundException;
-import com.itgirl.library_project.entity.Genre;
-import com.itgirl.library_project.repository.GenreRepository;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Slf4j
-@Service
-@AllArgsConstructor
-public class GenreService {
+public interface GenreService {
+    GenreDto addNewGenre(GenreDto genreDto);
 
-    private final GenreRepository genreRepository;
-    private final ModelMapper modelMapper;
+    List<GenreDto> getAllGenres(String name);
 
-    @Transactional
-    public GenreDto addNewGenre(GenreDto genreDto) {
-        if (genreDto.getName() == null || genreDto.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Genre name cannot be null or empty");
-        }
-        Genre genre = modelMapper.map(genreDto, Genre.class);
-        Genre savedGenre = genreRepository.save(genre);
-        return modelMapper.map(savedGenre, GenreDto.class);
-    }
+    GenreDto getGenreById(Long id);
 
-    @Transactional
-    public List<GenreDto> getAllGenres() {
-        return genreRepository.findAll().stream()
-                .map(genre -> modelMapper.map(genre, GenreDto.class))
-                .collect(Collectors.toList());
-    }
+    GenreDto updateGenre(Long id, GenreDto genreDto);
 
-    @Transactional
-    public GenreDto getGenreById(Long id) {
-        Genre genre = genreRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id " + id));
-        return modelMapper.map(genre, GenreDto.class);
-    }
+    void deleteGenre(Long id);
 
-    @Transactional
-    public GenreDto updateGenre(Long id, GenreDto genreDto) {
-        Genre existingGenre = genreRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id " + id));
-        modelMapper.map(genreDto, existingGenre);
-        Genre updatedGenre = genreRepository.save(existingGenre);
-        return modelMapper.map(updatedGenre, GenreDto.class);
-    }
-
-    @Transactional
-    public void deleteGenre(Long id) {
-        Genre genre = genreRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id " + id));
-        genreRepository.delete(genre);
-    }
+    List<GenreDto> getGenresByName(String name);
 }

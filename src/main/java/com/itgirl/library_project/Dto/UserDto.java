@@ -19,7 +19,7 @@ public class UserDto {
     @Email
     private String email;
     @Min(value = 18, message = "Возраст не должен быть меньше 18")
-    @Max(120)
+    @Max(value = 120, message = "Возраст не должен быть больше 120")
     private int age;
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;

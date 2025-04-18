@@ -1,82 +1,76 @@
 package com.itgirl.library_project.controller;
 
 import com.itgirl.library_project.Dto.GenreDto;
+import com.itgirl.library_project.Exception.ApiSuccessResponse;
 import com.itgirl.library_project.servise.GenreService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/genres")
 @AllArgsConstructor
-@Tag(name = "Жанры книг", description = "Управление списком жанров")
+@Tag(name = "Жанры книг", description = "Управление жанрами в библиотеке")
 public class GenreController {
 
     private final GenreService genreService;
 
     @Operation(summary = "Добавить новый жанр")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Жанр успешно добавлен"),
-            @ApiResponse(responseCode = "400", description = "Некорректные данные")
+            @ApiResponse(responseCode = "201", description = "Жанр успешно добавлен",
+                    content = @Content(schema = @Schema(implementation = GenreDto.class))),
+            @ApiResponse(responseCode = "400", description = "Ошибка валидации", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<Object> addNewGenre(@Valid @RequestBody GenreDto genreDto, BindingResult result) {
-        if (result.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            result.getAllErrors().forEach(objectError -> {
-                if (objectError instanceof FieldError fieldError) {
-                    errors.put(fieldError.getField(), fieldError.getDefaultMessage());
-                }
-            });
-            return ResponseEntity.badRequest().body(errors);
-        }
-        log.info("Добавление нового жанра: {}", genreDto);
-        GenreDto savedGenre = genreService.addNewGenre(genreDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedGenre);
+    public ResponseEntity<ApiSuccessResponse> addNewGenre(@Valid @RequestBody GenreDto genreDto) {
+        log.info("POST /genres — добавление жанра: {}", genreDto);
+        GenreDto saved = genreService.addNewGenre(genreDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiSuccessResponse("Жанр успешно добавлен", saved));
     }
-
 
     @Operation(summary = "Получить все жанры")
     @GetMapping
-    public List<GenreDto> getAllGenres() {
-        log.info("Получение списка всех жанров");
-        return genreService.getAllGenres();
+    public ResponseEntity<ApiSuccessResponse> getAllGenres(@RequestParam(value = "name", required = false) String name) {
+        log.info("GET /genres — получение жанров, фильтр: '{}'", name);
+        List<GenreDto> genres = (name == null || name.isBlank())
+                ? genreService.getAllGenres(null)
+                : genreService.getGenresByName(name);
+        return ResponseEntity.ok(new ApiSuccessResponse("Список жанров получен", genres));
     }
 
     @Operation(summary = "Получить жанр по ID")
     @GetMapping("/{id}")
-    public GenreDto getGenreById(@Valid @PathVariable Long id) {
-        log.info("Получение жанра по ID: {}", id);
-        return genreService.getGenreById(id);
+    public ResponseEntity<ApiSuccessResponse> getGenreById(@PathVariable Long id) {
+        log.info("GET /genres/{} — получение жанра по ID", id);
+        GenreDto genre = genreService.getGenreById(id);
+        return ResponseEntity.ok(new ApiSuccessResponse("Жанр найден", genre));
     }
 
+    @Operation(summary = "Обновить жанр по ID")
     @PutMapping("/{id}")
-    public GenreDto updateGenre(@Valid @PathVariable Long id, @RequestBody GenreDto genreDto) {
-        log.info("Изменение жанра по ID: {}", id);
-        return genreService.updateGenre(id, genreDto);
+    public ResponseEntity<ApiSuccessResponse> updateGenre(@PathVariable Long id, @Valid @RequestBody GenreDto genreDto) {
+        log.info("PUT /genres/{} — обновление жанра: {}", id, genreDto);
+        GenreDto updated = genreService.updateGenre(id, genreDto);
+        return ResponseEntity.ok(new ApiSuccessResponse("Жанр успешно обновлён", updated));
     }
 
+    @Operation(summary = "Удалить жанр по ID")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGenre(@PathVariable Long id) {
-        log.info("Удаление жанра по ID: {}", id);
+    public ResponseEntity<ApiSuccessResponse> deleteGenre(@PathVariable Long id) {
+        log.info("DELETE /genres/{} — удаление жанра", id);
         genreService.deleteGenre(id);
+        return ResponseEntity.ok(new ApiSuccessResponse("Жанр успешно удалён", null));
     }
 }
-
-
-
