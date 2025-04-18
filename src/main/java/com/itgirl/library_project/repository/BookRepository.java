@@ -16,5 +16,3 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with name: " + bookName));
     }
 }
-
-

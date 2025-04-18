@@ -65,7 +65,7 @@ public class BookServiceImplTest {
     @Test
     void addNewBook_EmptyName_ShouldThrowException() {
         BookDto bookDto = new BookDto();
-        bookDto.setName("   "); // empty name
+        bookDto.setName("   ");
         assertThrows(IllegalArgumentException.class, () -> bookService.addNewBook(bookDto));
     }
 

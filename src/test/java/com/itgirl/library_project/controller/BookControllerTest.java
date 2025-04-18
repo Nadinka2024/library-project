@@ -1,159 +1,148 @@
 package com.itgirl.library_project.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itgirl.library_project.Dto.AuthorDto;
 import com.itgirl.library_project.Dto.BookDto;
-import com.itgirl.library_project.Exception.ResourceNotFoundException;
-import com.itgirl.library_project.servise.BookService;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.modelmapper.ModelMapper;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class BookControllerTest {
 
-    @Mock
-    private BookService bookService;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
-    private ModelMapper modelMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @InjectMocks
-    private BookController bookController;
+    private BookDto bookDto;
 
-    private BookDto getSampleBook() {
-        return BookDto.builder()
-                .id(1L)
-                .name("Война и мир")
+    @BeforeEach
+    void setUp() {
+        AuthorDto author = AuthorDto.builder()
+                .name("Лев")
+                .surname("Толстой")
+                .build();
+        bookDto = BookDto.builder()
+                .name("Война и мир " + UUID.randomUUID())
                 .genre("Роман")
-                .authors(List.of(new AuthorDto(1L, "Лев", "Толстой")))
+                .authors(List.of(author))
                 .build();
     }
 
     @Test
-    @DisplayName("addNewBook — успешное добавление")
-    void addNewBook_success() {
-        BookDto book = getSampleBook();
-        BindingResult bindingResult = mock(BindingResult.class);
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(bookService.addNewBook(book)).thenReturn(book);
-
-        ResponseEntity<Object> response = bookController.addNewBook(book, bindingResult);
-
-        assertEquals(201, response.getStatusCodeValue());
-        assertEquals(book, response.getBody());
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void addNewBook_shouldReturnCreated() throws Exception {
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", containsString("Война и мир")))
+                .andExpect(jsonPath("$.genre").value("Роман"));
     }
 
     @Test
-    @DisplayName("addNewBook — ошибка валидации")
-    void addNewBook_validationError() {
-        BookDto book = getSampleBook();
-        BindingResult bindingResult = mock(BindingResult.class);
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void getAllBooks_shouldReturnList() throws Exception {
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDto)))
+                .andExpect(status().isCreated());
 
-        when(bindingResult.hasErrors()).thenReturn(true);
-        when(bindingResult.getAllErrors()).thenReturn(
-                List.of(new FieldError("bookDto", "name", "Название обязательно"))
-        );
-
-        ResponseEntity<Object> response = bookController.addNewBook(book, bindingResult);
-
-        assertEquals(400, response.getStatusCodeValue());
-        Map<String, String> errors = (Map<String, String>) response.getBody();
-        assertTrue(errors.containsKey("name"));
-        assertEquals("Название обязательно", errors.get("name"));
+        mockMvc.perform(get("/books"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
 
     @Test
-    @DisplayName("getAllBooks — успех")
-    void getAllBooks_success() {
-        List<BookDto> books = List.of(getSampleBook());
-        when(bookService.getAllBooks()).thenReturn(books);
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void getBookById_shouldReturnBook() throws Exception {
+        String response = mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDto)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
 
-        ResponseEntity<List<BookDto>> response = bookController.getAllBooks();
+        BookDto created = objectMapper.readValue(response, BookDto.class);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(books, response.getBody());
+        mockMvc.perform(get("/books/{id}", created.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", containsString("Война и мир")));
     }
 
     @Test
-    @DisplayName("getBookById — книга найдена")
-    void getBookById_found() {
-        BookDto book = getSampleBook();
-        when(bookService.getBookById(1L)).thenReturn(book);
-
-        ResponseEntity<Object> response = bookController.getBookById(1L);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(book, response.getBody());
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void getBookById_shouldReturnNotFound() throws Exception {
+        mockMvc.perform(get("/books/{id}", 99999L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", containsString("не найдена")));
     }
 
     @Test
-    @DisplayName("getBookById — не найдена")
-    void getBookById_notFound() {
-        when(bookService.getBookById(99L)).thenThrow(new ResourceNotFoundException("Книга не найдена"));
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void updateBook_shouldReturnUpdated() throws Exception {
+        String response = mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDto)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
 
-        ResponseEntity<Object> response = bookController.getBookById(99L);
+        BookDto created = objectMapper.readValue(response, BookDto.class);
+        created.setGenre("Исторический");
 
-        assertEquals(404, response.getStatusCodeValue());
-        assertEquals("Книга не найдена", response.getBody());
+        mockMvc.perform(put("/books/{id}", created.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(created)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.genre").value("Исторический"));
     }
 
     @Test
-    @DisplayName("updateBook — успех")
-    void updateBook_success() {
-        BookDto updated = getSampleBook();
-        when(bookService.updateBook(eq(1L), any(BookDto.class))).thenReturn(updated);
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void updateBook_shouldReturnNotFound() throws Exception {
+        bookDto.setGenre("Фантастика");
 
-        ResponseEntity<Object> response = bookController.updateBook(1L, updated);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(updated, response.getBody());
+        mockMvc.perform(put("/books/{id}", 12345L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", containsString("не найдена")));
     }
 
     @Test
-    @DisplayName("updateBook — не найдена")
-    void updateBook_notFound() {
-        BookDto book = getSampleBook();
-        when(bookService.updateBook(eq(1L), any())).thenThrow(new ResourceNotFoundException("Книга не найдена"));
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void deleteBook_shouldReturnNoContent() throws Exception {
+        String response = mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDto)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
 
-        ResponseEntity<Object> response = bookController.updateBook(1L, book);
+        BookDto created = objectMapper.readValue(response, BookDto.class);
 
-        assertEquals(404, response.getStatusCodeValue());
-        assertEquals("Книга не найдена", response.getBody());
+        mockMvc.perform(delete("/books/{id}", created.getId()))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    @DisplayName("deleteBook — успех")
-    void deleteBook_success() {
-        doNothing().when(bookService).deleteBook(1L);
-
-        ResponseEntity<Object> response = bookController.deleteBook(1L);
-
-        assertEquals(204, response.getStatusCodeValue());
-    }
-
-    @Test
-    @DisplayName("deleteBook — не найдена")
-    void deleteBook_notFound() {
-        doThrow(new ResourceNotFoundException("Книга не найдена")).when(bookService).deleteBook(99L);
-
-        ResponseEntity<Object> response = bookController.deleteBook(99L);
-
-        assertEquals(404, response.getStatusCodeValue());
-        assertEquals("Книга не найдена", response.getBody());
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void deleteBook_shouldReturnNotFound() throws Exception {
+        mockMvc.perform(delete("/books/{id}", 9999L))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("Книга с ID 9999 не найдена")));
     }
 }

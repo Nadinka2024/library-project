@@ -12,11 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long>, JpaSpecificationExecutor<Author> {
-    Author getAuthorById(Long id);
-
-    Author getAllAuthorByName(String name);
-
-    Optional<Author> findBySurnameAndName(String Surname, String Name);
 
     @Query("SELECT a FROM Author a LEFT JOIN FETCH a.books WHERE (:name IS NULL OR a.name = :name) AND (:surname IS NULL OR a.surname = :surname)")
     List<Author> findByNameOrSurname(@Param("name") String name, @Param("surname") String surname);

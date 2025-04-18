@@ -75,15 +75,16 @@ public class BookController {
             BookDto book = bookService.getBookById(id);
             return ResponseEntity.ok(book);
         } catch (ResourceNotFoundException e) {
-            log.warn("Книга не найдена по ID: {}", id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            log.warn("Книга с ID {} не найдена", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Книга не найдена с ID " + id));
         } catch (Exception e) {
             log.error("Ошибка при получении книги: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при получении книги");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Ошибка при получении книги"));
         }
     }
 
-    @Operation(summary = "Обновление книги по ID")
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateBook(@PathVariable Long id, @RequestBody BookDto bookDto) {
         try {
@@ -93,10 +94,12 @@ public class BookController {
             return ResponseEntity.ok(updated);
         } catch (ResourceNotFoundException e) {
             log.warn("Книга с ID {} не найдена для обновления", id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Книга с ID " + id + " не найдена"));
         } catch (Exception e) {
             log.error("Ошибка при обновлении книги: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при обновлении книги");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Ошибка при обновлении книги"));
         }
     }
 

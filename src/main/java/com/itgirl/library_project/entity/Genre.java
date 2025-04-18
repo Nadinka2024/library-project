@@ -26,4 +26,3 @@ public class Genre {
     @JsonManagedReference
     private List<Book> books;
 }
-

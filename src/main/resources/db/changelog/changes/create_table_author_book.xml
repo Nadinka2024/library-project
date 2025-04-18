@@ -7,6 +7,11 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create_table_author_book" author="nadezhdachurilo">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="author_book"/>
+            </not>
+        </preConditions>
         <createTable tableName="author_book">
             <column name="book_id" type="bigint">
                 <constraints nullable="false"></constraints>
