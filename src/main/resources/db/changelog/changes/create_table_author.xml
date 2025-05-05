@@ -9,10 +9,10 @@
     <changeSet id="create_table_authors" author="nadezhdachurilo">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="author"/>
+                <tableExists tableName="authors"/>
             </not>
         </preConditions>
-        <createTable tableName="author">
+        <createTable tableName="authors">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"></constraints>
             </column>

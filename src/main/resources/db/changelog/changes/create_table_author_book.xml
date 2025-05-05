@@ -6,20 +6,38 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create_table_author_book" author="nadezhdachurilo">
+    <changeSet id="create_table_authors_books" author="nadezhdachurilo">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="author_book"/>
+                <tableExists tableName="authors_books"/>
             </not>
         </preConditions>
-        <createTable tableName="author_book">
-            <column name="book_id" type="bigint">
+        <createTable tableName="authors_books">
+            <column name="books_id" type="bigint">
                 <constraints nullable="false"></constraints>
             </column>
-            <column name="author_id" type="bigint">
+            <column name="authors_id" type="bigint">
                 <constraints nullable="false"></constraints>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="add_fk_authors_books_authors" author="nadezhdachurilo">
+        <addForeignKeyConstraint
+                baseTableName="authors_books"
+                baseColumnNames="authors_id"
+                referencedTableName="authors"
+                referencedColumnNames="id"
+                constraintName="fk_authors_books_authors"/>
+    </changeSet>
+
+    <changeSet id="add_fk_authors_books_books" author="nadezhdachurilo">
+        <addForeignKeyConstraint
+                baseTableName="authors_books"
+                baseColumnNames="books_id"
+                referencedTableName="books"
+                referencedColumnNames="id"
+                constraintName="fk_authors_books_books"/>
     </changeSet>
 
 </databaseChangeLog>

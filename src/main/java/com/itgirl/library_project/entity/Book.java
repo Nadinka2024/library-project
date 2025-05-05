@@ -8,7 +8,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,15 +25,15 @@ public class Book {
 
     @JsonProperty("genre")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
+    @JoinColumn(name = "genres_id")
     private Genre genre;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
-            name = "author_book",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
-    @JsonProperty("authors")
+            name = "authors_books",
+            joinColumns = @JoinColumn(name = "books_id"),
+            inverseJoinColumns = @JoinColumn(name = "authors_id"))
+    @JsonProperty("author")
     @JsonManagedReference
     private List<Author> authors;
 }

@@ -10,21 +10,30 @@
 
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="book"/>
+                <tableExists tableName="books"/>
             </not>
         </preConditions>
 
-        <createTable tableName="book">
+        <createTable tableName="books">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar">
                 <constraints nullable="false"/>
             </column>
-            <column name="genre_id" type="bigint">
+            <column name="genres_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="add_fk_books_genres" author="nadezhdachurilo">
+        <addForeignKeyConstraint
+                baseTableName="books"
+                baseColumnNames="genres_id"
+                referencedTableName="genres"
+                referencedColumnNames="id"
+                constraintName="fk_books_genres"/>
     </changeSet>
 
 </databaseChangeLog>

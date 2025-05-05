@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "author")
+@Table(name = "authors")
 @Getter
 @Setter
 @NoArgsConstructor

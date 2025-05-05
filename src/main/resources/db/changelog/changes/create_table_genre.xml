@@ -9,10 +9,10 @@
     <changeSet id="create_table_genres" author="nadezhdachurilo">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="genre"/>
+                <tableExists tableName="genres"/>
             </not>
         </preConditions>
-        <createTable tableName="genre">
+        <createTable tableName="genres">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"></constraints>
             </column>
