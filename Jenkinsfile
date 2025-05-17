@@ -11,7 +11,7 @@ pipeline {
         PATH = "${env.MAVEN_HOME}/bin:${env.PATH}"
 
         // Настройки проекта
-        APP_NAME = "library-project-2"
+        APP_NAME = "library-project"
         VERSION = "0.0.1-SNAPSHOT"
     }
 
