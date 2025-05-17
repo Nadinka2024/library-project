@@ -1,33 +1,92 @@
 pipeline {
     agent any
 
+    environment {
+        // Настройки Java
+        JAVA_HOME = "${tool 'jdk17'}"
+        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+
+        // Настройки Maven
+        MAVEN_HOME = "${tool 'maven'}"
+        PATH = "${env.MAVEN_HOME}/bin:${env.PATH}"
+
+        // Настройки проекта
+        APP_NAME = "library-project-2"
+        VERSION = "0.0.1-SNAPSHOT"
+    }
+
     tools {
-        jdk 'jdk-17'
+        // Установленные в Jenkins инструменты
+        jdk 'jdk17'
+        maven 'maven'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Nadinka2024/library-project.git'
+                git branch: 'main',
+                    url: 'https://github.com/Nadinka2024/library-project.git',
+                    credentialsId: 'github-credentials'
             }
         }
 
         stage('Build') {
             steps {
-                sh './mvnw clean package'
+                sh "mvn clean package -DskipTests"
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
 
-        stage('Docker Build') {
+        stage('Test') {
             steps {
-                sh 'docker build -t library-project .'
+                sh "mvn test"
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/**/*.xml'
+                }
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose up -d'
+        stage('SonarQube Analysis') {
+            when {
+                expression { env.BRANCH_NAME == 'main' }
             }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "mvn sonar:sonar"
+                }
+            }
+        }
+
+        stage('Deploy to Dev') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sshagent(['ssh-credentials']) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no target/${APP_NAME}-${VERSION}.jar user@dev-server:/opt/app/
+                        ssh user@dev-server "sudo systemctl restart library-app"
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            slackSend channel: '#build-notifications',
+                     color: 'good',
+                     message: "Build SUCCESSFUL: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+        failure {
+            slackSend channel: '#build-notifications',
+                     color: 'danger',
+                     message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
         }
     }
 }
