@@ -5,28 +5,28 @@ pipeline {
         jdk 'jdk-21'
     }
 
-    stages {
-        stage('Checkout') {
-            git branch: 'main',
-                               url: 'https://github.com/Nadinka2024/library-project.git',
-                               credentialsId: 'your-credentials-id'
+   pipeline {
+       agent any
 
-        stage('Build') {
-            steps {
-                sh './mvnw clean package'
-            }
-        }
+       stages {
+           stage('Checkout') {
+               steps {
+                   git url: 'https://github.com/Nadinka2024/library-project.git',
+                       branch: 'main'
+               }
+           }
 
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t library-project .'
-            }
-        }
+           stage('Build') {
+               steps {
+                   sh './mvnw clean package'
+               }
+           }
 
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
-    }
-}
+           stage('Docker') {
+               steps {
+                   sh 'docker build -t library-project .'
+                   sh 'docker-compose up -d'
+               }
+           }
+       }
+   }
