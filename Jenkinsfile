@@ -12,7 +12,6 @@ pipeline {
            stage('Checkout') {
                steps {
                    git url: 'https://github.com/Nadinka2024/library-project.git',
-                       branch: 'main'
                }
            }
 
