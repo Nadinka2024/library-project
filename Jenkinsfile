@@ -7,10 +7,9 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            steps {
-                git 'https://github.com/Nadinka2024/library-project.git'
-            }
-        }
+            git branch: 'main',
+                               url: 'https://github.com/Nadinka2024/library-project.git',
+                               credentialsId: 'your-credentials-id'
 
         stage('Build') {
             steps {
