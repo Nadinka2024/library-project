@@ -20,7 +20,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('Sonar') {
-                    sh './mvnw sonar:sonar -Dsonar.projectKey=library-project -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN'
+                    sh './mvnw sonar:sonar -Dsonar.projectKey=library-project -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN}'
                 }
             }
         }
@@ -50,8 +50,8 @@ pipeline {
             steps {
                 sh 'kubectl apply -f k8s/app-deployment.yaml'
                 sh 'kubectl apply -f k8s/app-service.yaml'
-                                sh 'kubectl apply -f k8s/postgres-deployment.yaml'
-                                sh 'kubectl apply -f k8s/postgres-service.yaml'
+                sh 'kubectl apply -f k8s/postgres-deployment.yaml'
+                sh 'kubectl apply -f k8s/postgres-service.yaml'
             }
         }
     }
