@@ -18,14 +18,16 @@ pipeline {
             }
         }
 
+         environment {
+        PATH = "/usr/local/bin:/usr/bin:/bin:${env.PATH}"
+    }
+    stages {
         stage('Docker') {
             steps {
-               stage('Docker') {
-    steps {
-        sh '/usr/local/bin/docker build -t library-project .'
-        sh '/usr/local/bin/docker-compose down || true'
-        sh '/usr/local/bin/docker rm -f library-db || true'
-        sh '/usr/local/bin/docker-compose up -d'
+                sh 'docker build -t library-project .'
+                sh 'docker-compose down || true'
+                sh 'docker rm -f library-db || true'
+                sh 'docker-compose up -d'
     }
 }
         stage('Deploy to Kubernetes') {
