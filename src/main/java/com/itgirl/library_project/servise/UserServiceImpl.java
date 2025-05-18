@@ -4,6 +4,7 @@ import com.itgirl.library_project.Exception.ResourceNotFoundException;
 import com.itgirl.library_project.entity.User;
 import com.itgirl.library_project.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@AllArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final ModelMapper modelMapper;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -33,10 +31,10 @@ public class UserServiceImpl implements UserService {
         }
         log.info("Создание нового пользователя с именем: {}", userDto.getName());
 
-        String passwordEncode = passwordEncoder.encode(userDto.getPassword());
-        userDto.setPassword(passwordEncode);
-
         User user = modelMapper.map(userDto, User.class);
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        user.setPassword(encodedPassword);
+
         User savedUser = userRepository.save(user);
 
         log.info("Пользователь успешно сохранен: {}", savedUser.getName());
