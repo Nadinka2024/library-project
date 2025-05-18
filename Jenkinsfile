@@ -7,12 +7,27 @@ pipeline {
 
     environment {
         PATH = "/usr/local/bin:/usr/bin:/bin:${env.PATH}"
+        SONAR_TOKEN = credentials('SonarQubePwd')
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/Nadinka2024/library-project.git'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('Sonar') {
+                    sh './mvnw sonar:sonar -Dsonar.projectKey=library-project -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN'
+                }
+            }
+        }
+
+        stage('SonarQube Quality Gate') {
+            steps {
+                waitForQualityGate abortPipeline: true
             }
         }
 
@@ -37,8 +52,6 @@ pipeline {
                 sh 'kubectl apply -f k8s/app-service.yaml'
                                 sh 'kubectl apply -f k8s/postgres-deployment.yaml'
                                 sh 'kubectl apply -f k8s/postgres-service.yaml'
-
-
             }
         }
     }
