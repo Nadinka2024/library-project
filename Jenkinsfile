@@ -1,22 +1,32 @@
 pipeline {
     agent any
-    triggers {
-        pollSCM('* * * * *') // Проверка изменений каждую минуту
+
+    tools {
+        jdk 'jdk-21'
     }
+
     stages {
         stage('Checkout') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    extensions: [[$class: 'ForceUpdate']],
-                    userRemoteConfigs: [[url: 'https://github.com/Nadinka2024/library-project.git']]
-                ])
+                git 'https://github.com/Nadinka2024/library-project.git'
             }
         }
+
         stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                sh './mvnw clean package'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t library-project .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose up -d'
             }
         }
     }
