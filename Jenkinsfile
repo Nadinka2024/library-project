@@ -20,14 +20,15 @@ pipeline {
 
         stage('Docker') {
             steps {
-       sh 'docker build -t library-project .'
-        sh 'docker-compose down || true'
-        sh 'docker rm -f library-db || true'
-        sh 'docker network prune -f || true'
-        sh 'docker volume prune -f || true'
-        sh 'docker-compose up -d'  
+                sh 'docker build -t library-project .'
+                sh 'docker-compose down || true'
+                sh 'docker rm -f library-db || true'
+                sh 'docker network prune -f || true'
+                sh 'docker volume prune -f || true'
+                sh 'docker-compose up -d'
             }
         }
+
         stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f k8s/deployment.yaml'
