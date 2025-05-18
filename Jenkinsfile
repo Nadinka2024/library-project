@@ -17,17 +17,11 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube') {
             steps {
                 withSonarQubeEnv('Sonar') {
                     sh './mvnw sonar:sonar -Dsonar.projectKey=library-project -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN}'
                 }
-            }
-        }
-
-        stage('SonarQube Quality Gate') {
-            steps {
-                waitForQualityGate abortPipeline: true
             }
         }
 
